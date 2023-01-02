@@ -20,5 +20,15 @@ npm run build
 npm run lint
 ```
 
+### Install less & less-loader
+```
+npm install --save less less-loader
+```
+
+### install vue-router
+```
+npm install --save vue-router@3
+```
+
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
