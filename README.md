@@ -30,5 +30,20 @@ npm install --save less less-loader
 npm install --save vue-router@3
 ```
 
+### install axios
+```
+npm install --save axios
+```
+
+### install nprogress
+```
+npm install --save nprogress
+```
+
+### install vuex
+```
+npm install --save vuex@3
+```
+
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
