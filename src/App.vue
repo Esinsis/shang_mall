@@ -14,6 +14,10 @@ export default {
   components: {
     Header,
     Footer
+  },
+  mounted() {
+    // App组件只会挂载一次，防止三级联动模块每次挂载时都会请求后端接口
+    this.$store.dispatch('home/getCategories')
   }
 }
 </script>

@@ -1,9 +1,9 @@
 <template>
   <div class="type-nav">
     <div class="container">
-      <div @mouseleave="restoreIndex">
+      <div @mouseleave="mouseLeave" @mouseenter="changeShow">
         <h2 class="all">全部商品分类</h2>
-        <div class="sort">
+        <div class="sort" v-show="show">
           <div class="all-sort-list2" @click="goSearch">
             <div class="item"
                  v-for="(category, index) in categories"
@@ -65,12 +65,16 @@ export default {
   name: "TypeNav",
   data() {
     return {
-      currentIndex: -1
+      currentIndex: -1,
+      show: true
     }
   },
   mounted() {
-    this.$store.dispatch('home/getCategories')
+    if (this.$route.path !== '/home'){
+      this.show = false
+    }
   },
+
   computed: {
     ...mapState({
       // 右侧需要一个函数，当使用这个计算属性的时候，右侧函数会被调用
@@ -81,8 +85,16 @@ export default {
     changeIndex: throttle(function (index) {
       this.currentIndex = index
     }, 50),
-    restoreIndex() {
+    mouseLeave() {
       this.currentIndex = -1
+      if (this.$route.path !== '/home'){
+        this.show = false
+      }
+    },
+    changeShow(){
+      if (this.$route.path !== '/home'){
+        this.show = true
+      }
     },
     goSearch(event) {
       let element = event.target
@@ -100,6 +112,9 @@ export default {
         }
       }
       location.query = query
+      if (this.$route.params){
+        location.params = this.$route.params
+      }
       this.$router.push(location)
     }
   }

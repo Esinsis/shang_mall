@@ -45,5 +45,15 @@ npm install --save nprogress
 npm install --save vuex@3
 ```
 
+### install mockjs
+```
+cnpm install --save mockjs
+```
+
+### install swiper
+```
+cnpm install --save swiper@5
+```
+
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).

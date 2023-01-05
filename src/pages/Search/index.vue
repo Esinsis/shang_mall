@@ -1,11 +1,12 @@
 <template>
-  <h1>{{keyword}} -- {{$route.query.k}}</h1>
+  <div>
+    <TypeNav/>
+  </div>
 </template>
 
 <script>
 export default {
-  name: "Search",
-  props: ['keyword']
+  name: "Search"
 }
 </script>
 
