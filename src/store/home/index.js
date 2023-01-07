@@ -7,19 +7,19 @@ const state = {
 }
 
 const actions = {
-    async getCategories({commit}){
+    async getCategories({commit}) {
         let result = await getCategories();
-        if (result.code === 200){
+        if (result.code === 200) {
             commit('GET_CATEGORIES', result.data)
         }
     },
-    async getBannerList({commit}){
+    async getBannerList({commit}) {
         let result = await getBannerList();
-        if (result.code === 200){
+        if (result.code === 200) {
             commit('GET_BANNERS', result.data)
         }
     },
-    async getFloorList({commit}){
+    async getFloorList({commit}) {
         let result = await getFloorList();
         if (result.code === 200) {
             commit('GET_FLOORS', result.data);
@@ -28,13 +28,13 @@ const actions = {
 }
 
 const mutations = {
-    GET_CATEGORIES(state, categories){
+    GET_CATEGORIES(state, categories) {
         state.categories = categories
     },
-    GET_BANNERS(state, banners){
+    GET_BANNERS(state, banners) {
         state.banners = banners
     },
-    GET_FLOORS(state, floors){
+    GET_FLOORS(state, floors) {
         state.floors = floors
     }
 }
