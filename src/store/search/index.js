@@ -1,4 +1,4 @@
-import {getSearchList} from "@/api";
+import { getSearchList } from "@/api";
 
 export default {
     namespaced: true,
@@ -9,14 +9,12 @@ export default {
         async getSearchList(context, params = {}) {
             let result = await getSearchList(params);
             if (result.code === 200) {
-                console.log('result', result)
                 context.commit("GET_SEARCH_LIST", result.data)
             }
         }
     },
     mutations: {
         GET_SEARCH_LIST(state, searchList) {
-            console.log('@', searchList)
             state.searchList = searchList;
         }
     },

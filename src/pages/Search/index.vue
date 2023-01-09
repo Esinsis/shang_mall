@@ -1,6 +1,6 @@
 <template>
   <div>
-    <TypeNav/>
+    <TypeNav />
     <div class="main">
       <div class="py-container">
         <!--bread-->
@@ -11,15 +11,33 @@
             </li>
           </ul>
           <ul class="fl sui-tag">
-            <li class="with-x">手机</li>
-            <li class="with-x">iphone<i>×</i></li>
-            <li class="with-x">华为<i>×</i></li>
-            <li class="with-x">OPPO<i>×</i></li>
+            <!-- 分类的面包屑 -->
+            <li class="with-x" v-if="searchParams.categoryName">
+              {{ searchParams.categoryName }}
+              <i @click="removeCategoryName">×</i>
+            </li>
+            <!-- 搜索关键字面包屑 -->
+            <li class="with-x" v-if="searchParams.keyword">
+              {{ searchParams.keyword }}
+              <i @click="removeKeyword">×</i>
+            </li>
+
+            <!-- Brand品牌面包屑 -->
+            <li class="with-x" v-if="searchParams.trademark">
+              {{ searchParams.trademark.split(":")[1] }}
+              <i @click="removeTrademark">×</i>
+            </li>
+
+            <!--  -->
+            <li class="with-x" v-for="(prop, index) in searchParams.props" :key="index">
+              {{ prop.split(":")[1] }}
+              <i @click="removeProps(index)">×</i>
+            </li>
           </ul>
         </div>
 
         <!--selector-->
-        <SearchSelector/>
+        <SearchSelector @trademarkInfo="trademarkInfo" @attrInfo="attrInfo" />
 
         <!--details-->
         <div class="details clearfix">
@@ -52,7 +70,7 @@
               <li class="yui3-u-1-5" v-for="good in goodsList" :key="good.id">
                 <div class="list-wrap">
                   <div class="p-img">
-                    <a href="item.html" target="_blank"><img :src="good.defaultImg"/></a>
+                    <a href="item.html" target="_blank"><img :src="good.defaultImg" /></a>
                   </div>
                   <div class="price">
                     <strong>
@@ -113,18 +131,105 @@
 
 <script>
 import SearchSelector from './SearchSelector/SearchSelector'
-import {mapGetters} from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
   name: 'Search',
+  data() {
+    return {
+      searchParams: {
+        "category1Id": "",
+        "category2Id": "",
+        "category3Id": "",
+        "categoryName": "",
+        "keyword": "",
+        "order": "",
+        "pageNo": 1,
+        "pageSize": 10,
+        "props": [],
+        "trademark": ""
+      }
+    }
+  },
+  methods: {
+    getData() {
+      this.$store.dispatch('search/getSearchList', this.searchParams)
+    },
+
+    // 移除三级分类函数
+    removeCategoryName() {
+      this.searchParams.categoryName = '';
+      this.searchParams.category1Id = undefined;
+      this.searchParams.category2Id = undefined;
+      this.searchParams.category3Id = undefined;
+      this.getData();
+      // if (this.$route.params) {
+      //   this.$router.push({ name: 'search', params: this.$route.params });
+      // }
+    },
+
+    // 移除关键字函数
+    removeKeyword() {
+      this.searchParams.keyword = '';
+
+      // if (this.$route.query) {
+      //   this.$router.push({ name: 'search', query: this.$route.query })
+      // }
+      // 通知兄弟组件Header清除搜索关键字
+      this.$bus.$emit('clearKeyword');
+
+      this.getData();
+    },
+    // 移除品牌函数
+    removeTrademark() {
+      this.searchParams.trademark = '';
+      this.getData()
+    },
+    // 移除商品属性面包屑函数
+    removeProps(index){
+      this.searchParams.props.splice(index, 1);
+      this.getData();
+    },
+
+    // 品牌面包屑回调
+    trademarkInfo(trademark) {
+      let tm = `${trademark.tmId}:${trademark.tmName}`;
+      this.searchParams.trademark = tm;
+      this.getData();
+    },
+    // 商品属性面包屑回调
+    attrInfo(attr, attrValue) {
+      let prop = `${attr.attrId}:${attrValue}:${attr.attrName}`;
+      if(this.searchParams.props.indexOf(prop) === -1){
+        this.searchParams.props.push(prop);
+        this.getData();
+      }
+    }
+  },
   components: {
     SearchSelector
   },
+  beforeMount() {
+    this.searchParams = { ...this.searchParams, ...this.$route.params, ...this.$route.query }
+  },
   mounted() {
-    this.$store.dispatch("search/getSearchList")
+    this.getData()
   },
   computed: {
     ...mapGetters('search', ['goodsList'])
+  },
+  watch: {
+    $route: {
+      deep: true,
+      handler(newVal, oldVal) {
+        //先把用户前面存储的1|2|3级别ID清除
+        this.searchParams.category1Id = undefined
+        this.searchParams.category2Id = undefined
+        this.searchParams.category3Id = undefined
+        this.searchParams = { ...this.searchParams, ...this.$route.query, ...this.$route.params }
+        this.getData()
+      }
+    }
   }
 }
 </script>

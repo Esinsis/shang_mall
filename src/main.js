@@ -16,7 +16,11 @@ Vue.component(TypeNav.name, TypeNav)
 Vue.component(Carousel.name, Carousel)
 Vue.config.productionTip = false
 new Vue({
-  render: h => h(App),
+  beforeCreate(){
+    // 配置全局事件总线
+    Vue.prototype.$bus = this
+  },
   router,
-  store
+  store,
+  render: h => h(App),
 }).$mount('#app')
