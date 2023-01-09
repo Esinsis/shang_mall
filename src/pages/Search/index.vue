@@ -28,7 +28,7 @@
               <i @click="removeTrademark">×</i>
             </li>
 
-            <!--  -->
+            <!-- 商品属性面包屑 -->
             <li class="with-x" v-for="(prop, index) in searchParams.props" :key="index">
               {{ prop.split(":")[1] }}
               <i @click="removeProps(index)">×</i>
@@ -44,23 +44,11 @@
           <div class="sui-navbar">
             <div class="navbar-inner filter">
               <ul class="sui-nav">
-                <li class="active">
-                  <a href="#">综合</a>
+                <li :class="{ active: isOne }" @click="sort('1')">
+                  <a>综合<span v-show="isOne && isDesc">⬇</span><span v-show="isOne && isAsc">⬆</span></a>
                 </li>
-                <li>
-                  <a href="#">销量</a>
-                </li>
-                <li>
-                  <a href="#">新品</a>
-                </li>
-                <li>
-                  <a href="#">评价</a>
-                </li>
-                <li>
-                  <a href="#">价格⬆</a>
-                </li>
-                <li>
-                  <a href="#">价格⬇</a>
+                <li :class="{ active: isTwo }" @click="sort('2')">
+                  <a>价格<span v-show="isTwo && isDesc">⬇</span><span v-show="isTwo && isAsc">⬆</span></a>
                 </li>
               </ul>
             </div>
@@ -143,7 +131,7 @@ export default {
         "category3Id": "",
         "categoryName": "",
         "keyword": "",
-        "order": "",
+        "order": "1:desc",
         "pageNo": 1,
         "pageSize": 10,
         "props": [],
@@ -186,7 +174,7 @@ export default {
       this.getData()
     },
     // 移除商品属性面包屑函数
-    removeProps(index){
+    removeProps(index) {
       this.searchParams.props.splice(index, 1);
       this.getData();
     },
@@ -200,10 +188,25 @@ export default {
     // 商品属性面包屑回调
     attrInfo(attr, attrValue) {
       let prop = `${attr.attrId}:${attrValue}:${attr.attrName}`;
-      if(this.searchParams.props.indexOf(prop) === -1){
+      if (this.searchParams.props.indexOf(prop) === -1) {
         this.searchParams.props.push(prop);
         this.getData();
       }
+    },
+
+    sort(flag) {
+      let originFlag = this.searchParams.order.split(":")[0];
+      let originOrder = this.searchParams.order.split(":")[1];
+      let newOrder = '';
+      if (flag == originFlag) {
+        newOrder = `${flag}:${originOrder == 'desc' ? 'asc' : 'desc'}`;
+        console.log(newOrder);
+      } else {
+        newOrder = `${flag}:desc`;
+        console.log(newOrder);
+      }
+      this.searchParams.order = newOrder;
+      this.getData();
     }
   },
   components: {
@@ -216,7 +219,19 @@ export default {
     this.getData()
   },
   computed: {
-    ...mapGetters('search', ['goodsList'])
+    ...mapGetters('search', ['goodsList']),
+    isOne(){
+      return this.searchParams.order.indexOf('1') != -1
+    },
+    isTwo(){
+      return this.searchParams.order.indexOf('2') != -1
+    },  
+    isDesc(){
+      return this.searchParams.order.split(':')[1] == 'desc';
+    },
+    isAsc(){
+      return this.searchParams.order.split(':')[1] == 'asc';
+    }
   },
   watch: {
     $route: {
