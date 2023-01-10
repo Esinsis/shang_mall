@@ -82,35 +82,13 @@
               </li>
             </ul>
           </div>
-          <div class="fr page">
-            <div class="sui-pagination clearfix">
-              <ul>
-                <li class="prev disabled">
-                  <a href="#">«上一页</a>
-                </li>
-                <li class="active">
-                  <a href="#">1</a>
-                </li>
-                <li>
-                  <a href="#">2</a>
-                </li>
-                <li>
-                  <a href="#">3</a>
-                </li>
-                <li>
-                  <a href="#">4</a>
-                </li>
-                <li>
-                  <a href="#">5</a>
-                </li>
-                <li class="dotted"><span>...</span></li>
-                <li class="next">
-                  <a href="#">下一页»</a>
-                </li>
-              </ul>
-              <div><span>共10页&nbsp;</span></div>
-            </div>
-          </div>
+          <!-- 分页 pageCount 是连续出现的页数-->
+          <Pagination 
+            :pageNo="searchParams.pageNo" 
+            :pageSize="searchParams.pageSize" 
+            :total="total" 
+            :pageCount="5" 
+            @currentPage="currentPage"/>
         </div>
       </div>
     </div>
@@ -119,7 +97,8 @@
 
 <script>
 import SearchSelector from './SearchSelector/SearchSelector'
-import { mapGetters } from "vuex";
+import Pagination from '@/components/Pagination'
+import { mapGetters, mapState } from "vuex";
 
 export default {
   name: 'Search',
@@ -150,23 +129,20 @@ export default {
       this.searchParams.category1Id = undefined;
       this.searchParams.category2Id = undefined;
       this.searchParams.category3Id = undefined;
-      this.getData();
-      // if (this.$route.params) {
-      //   this.$router.push({ name: 'search', params: this.$route.params });
-      // }
+      if (this.$route.params) {
+        this.$router.push({ name: 'search', params: this.$route.params });
+      }
     },
 
     // 移除关键字函数
     removeKeyword() {
       this.searchParams.keyword = '';
 
-      // if (this.$route.query) {
-      //   this.$router.push({ name: 'search', query: this.$route.query })
-      // }
+      if (this.$route.query) {
+        this.$router.push({ name: 'search', query: this.$route.query })
+      }
       // 通知兄弟组件Header清除搜索关键字
       this.$bus.$emit('clearKeyword');
-
-      this.getData();
     },
     // 移除品牌函数
     removeTrademark() {
@@ -193,24 +169,28 @@ export default {
         this.getData();
       }
     },
-
+    // 排序
     sort(flag) {
       let originFlag = this.searchParams.order.split(":")[0];
       let originOrder = this.searchParams.order.split(":")[1];
       let newOrder = '';
       if (flag == originFlag) {
         newOrder = `${flag}:${originOrder == 'desc' ? 'asc' : 'desc'}`;
-        console.log(newOrder);
       } else {
         newOrder = `${flag}:desc`;
-        console.log(newOrder);
       }
       this.searchParams.order = newOrder;
       this.getData();
+    },
+
+    currentPage(pageNo){
+      this.searchParams.pageNo = pageNo
+      this.getData()
     }
   },
   components: {
-    SearchSelector
+    SearchSelector,
+    Pagination
   },
   beforeMount() {
     this.searchParams = { ...this.searchParams, ...this.$route.params, ...this.$route.query }
@@ -220,17 +200,20 @@ export default {
   },
   computed: {
     ...mapGetters('search', ['goodsList']),
-    isOne(){
+    ...mapState({
+      total: state => state.search.searchList.total
+    }),
+    isOne() {
       return this.searchParams.order.indexOf('1') != -1
     },
-    isTwo(){
+    isTwo() {
       return this.searchParams.order.indexOf('2') != -1
-    },  
-    isDesc(){
-      return this.searchParams.order.split(':')[1] == 'desc';
     },
-    isAsc(){
-      return this.searchParams.order.split(':')[1] == 'asc';
+    isDesc() {
+      return this.searchParams.order.split(':')[1] == 'desc'
+    },
+    isAsc() {
+      return this.searchParams.order.split(':')[1] == 'asc'
     }
   },
   watch: {
@@ -488,93 +471,6 @@ export default {
                 }
               }
             }
-          }
-        }
-      }
-
-      .page {
-        width: 733px;
-        height: 66px;
-        overflow: hidden;
-        float: right;
-
-        .sui-pagination {
-          margin: 18px 0;
-
-          ul {
-            margin-left: 0;
-            margin-bottom: 0;
-            vertical-align: middle;
-            width: 490px;
-            float: left;
-
-            li {
-              line-height: 18px;
-              display: inline-block;
-
-              a {
-                position: relative;
-                float: left;
-                line-height: 18px;
-                text-decoration: none;
-                background-color: #fff;
-                border: 1px solid #e0e9ee;
-                margin-left: -1px;
-                font-size: 14px;
-                padding: 9px 18px;
-                color: #333;
-              }
-
-              &.active {
-                a {
-                  background-color: #fff;
-                  color: #e1251b;
-                  border-color: #fff;
-                  cursor: default;
-                }
-              }
-
-              &.prev {
-                a {
-                  background-color: #fafafa;
-                }
-              }
-
-              &.disabled {
-                a {
-                  color: #999;
-                  cursor: default;
-                }
-              }
-
-              &.dotted {
-                span {
-                  margin-left: -1px;
-                  position: relative;
-                  float: left;
-                  line-height: 18px;
-                  text-decoration: none;
-                  background-color: #fff;
-                  font-size: 14px;
-                  border: 0;
-                  padding: 9px 18px;
-                  color: #333;
-                }
-              }
-
-              &.next {
-                a {
-                  background-color: #fafafa;
-                }
-              }
-            }
-          }
-
-          div {
-            color: #333;
-            font-size: 14px;
-            float: right;
-            width: 241px;
           }
         }
       }
