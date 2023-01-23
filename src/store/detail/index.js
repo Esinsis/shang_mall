@@ -1,4 +1,4 @@
-import { getGoodInfo } from "@/api"
+import { getGoodInfo, saveToCart } from "@/api"
 
 const state = {
     goodInfo: {}
@@ -7,6 +7,14 @@ const actions = {
     async getGoodDetail({commit}, skuid){
         let result = await getGoodInfo(skuid);
         commit('GET_GOOD_INFO', result.data);
+    },
+    async save2Cart({commit}, {skuid, skuNum}){
+        let result = await saveToCart(skuid, skuNum);
+        if(result.code == 200) {
+            return "OK";
+        } else {
+            return Promise.reject(new Error('save to shotcart failed'));
+        }
     }
 }
 const mutations = {

@@ -74,12 +74,12 @@
             </div>
             <div class="cartWrap">
               <div class="controls">
-                <input autocomplete="off" class="itxt">
-                <a href="javascript:" class="plus">+</a>
-                <a href="javascript:" class="mins">-</a>
+                <input autocomplete="off" class="itxt" v-model="skuNum" @change="changeSkuNum">
+                <a href="javascript:" class="plus" @click="skuNum++">+</a>
+                <a href="javascript:" class="mins" @click="skuNum > 1 ? skuNum-- : skuNum = 1">-</a>
               </div>
               <div class="add">
-                <a href="javascript:">加入购物车</a>
+                <a href="javascript:" @click="add2Cart">加入购物车</a>
               </div>
             </div>
           </div>
@@ -340,16 +340,58 @@ export default {
     ImageList,
     Zoom
   },
+  data() {
+    return {
+      //购买商品数量
+      skuNum: 1
+    }
+  },
   methods: {
     getData() {
       this.$store.dispatch('detail/getGoodDetail', this.$route.params.skuid)
     },
     changeChecked(saleAttrValue, arr) {
-      console.log(arr, saleAttrValue);
       arr.forEach((item) => {
         item.isChecked = '0';
       })
       saleAttrValue.isChecked = '1';
+    },
+    changeSkuNum(event) {
+      let value = event.target.value;
+      if (isNaN(value * 1) || value < 1) {
+        this.skuNum = 1;
+      } else {
+        this.skuNum = parseInt(value * 1);
+      }
+    },
+    // 添加购物车
+    async add2Cart() {
+      let skuid = this.$route.params.skuid;
+      let skuNum = this.skuNum;
+      /**
+       * dispatch 派发请求传递参数支持两种写法
+       * 需要传递多个参数时需要把多个参数封装到一个对象中传递，否则除第一个参数外其它的参数无法接受到
+       * 1. payload 方式
+       *  this.$store.dispath('cart/save2Cart', {
+       *    skuid: skuid,
+       *    skuNum: skuNum
+       *  })
+       * 2. 对象Object
+       *  this.$store.dispatch({
+       *    type: 'cart/save2Cart',
+       *    skuid: skuid,
+       *    skuNum, skuNum
+       *  })
+       */
+      // 1. 派发请求添加商品到购物车
+      try {
+        await this.$store.dispatch('detail/save2Cart', { skuid, skuNum });
+        // 2. 添加成功进行路由跳转， 失败进行错误提示
+        sessionStorage.setItem('SKUINFO', JSON.stringify(this.goodInfo));
+        this.$router.push({name: 'addCartSuccess', query: {skuNum}});
+      } catch (error) {
+        alert(error.message);
+      }
     }
   },
   mounted() {
