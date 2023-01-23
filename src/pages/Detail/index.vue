@@ -7,18 +7,18 @@
     <section class="con">
       <!-- 导航路径区域 -->
       <div class="conPoin">
-        <span>{{ categoryView.category1Name }}</span>
-        <span>{{ categoryView.category2Name }}</span>
-        <span>{{ categoryView.category3Name }}</span>
+        <span v-show="categoryView.category1Name">{{ categoryView.category1Name }}</span>
+        <span v-show="categoryView.category2Name">{{ categoryView.category2Name }}</span>
+        <span v-show="categoryView.category3Name">{{ categoryView.category3Name }}</span>
       </div>
       <!-- 主要内容区域 -->
       <div class="mainCon">
         <!-- 左侧放大镜区域 -->
         <div class="previewWrap">
           <!--放大镜效果-->
-          <Zoom />
+          <Zoom :imgList="imageList" />
           <!-- 小图列表 -->
-          <ImageList />
+          <ImageList :imgList="imageList" />
         </div>
         <!-- 右侧选择区域布局 -->
         <div class="InfoWrap">
@@ -66,7 +66,8 @@
               <dl v-for="sav in spuSaleAttrList" :key="sav.id">
                 <dt class="title">选择{{ sav.saleAttrName }}</dt>
                 <dd changepirce="0" :class="{ active: saleAttrValue.isChecked == 1 }"
-                  v-for="saleAttrValue in sav.spuSaleAttrValueList" :key="saleAttrValue.id">
+                  v-for="saleAttrValue in sav.spuSaleAttrValueList" :key="saleAttrValue.id"
+                  @click="changeChecked(saleAttrValue, sav.spuSaleAttrValueList)">
                   {{ saleAttrValue.saleAttrValueName }}
                 </dd>
               </dl>
@@ -342,6 +343,13 @@ export default {
   methods: {
     getData() {
       this.$store.dispatch('detail/getGoodDetail', this.$route.params.skuid)
+    },
+    changeChecked(saleAttrValue, arr) {
+      console.log(arr, saleAttrValue);
+      arr.forEach((item) => {
+        item.isChecked = '0';
+      })
+      saleAttrValue.isChecked = '1';
     }
   },
   mounted() {
@@ -349,7 +357,10 @@ export default {
   },
   computed: {
     // 在store中开启了namespace， 则使用mapGetters时必须同样添加namespace
-    ...mapGetters('detail', ['goodInfo', 'skuInfo', 'categoryView', 'spuSaleAttrList'])
+    ...mapGetters('detail', ['goodInfo', 'skuInfo', 'categoryView', 'spuSaleAttrList']),
+    imageList() {
+      return this.skuInfo.skuImageList || [];
+    }
   }
 }
 </script>
