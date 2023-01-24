@@ -10,12 +10,21 @@ export const getGoodInfo = (skuid) => request({ url: `/item/${skuid}`, method: '
 // 添加商品到购物车 || 更新购物车商品数量
 export const saveToCart = (skuId, skuNum) => request({ url: `/cart/addToCart/${skuId}/${skuNum}`, method: 'POST' });
 // 获取购物车商品列表
-export const cartList = () => request({url: '/cart/cartList', method: 'GET'});
+export const cartList = () => request({ url: '/cart/cartList', method: 'GET' });
 // 切换购物车中商品的选中状态
-export const checkCart = (skuId, isChecked) => request({url: `/cart/checkCart/${skuId}/${isChecked}`});
+export const checkCart = (skuId, isChecked) => request({ url: `/cart/checkCart/${skuId}/${isChecked}` });
 // 删除购物城选中商品
-export const deleteCartById = (skuId) => request({url: `/cart/deleteCart/${skuId}`, method: 'DELETE'});
-
+export const deleteCartById = (skuId) => request({ url: `/cart/deleteCart/${skuId}`, method: 'DELETE' });
+// 获取短信验证码
+export const getVerificationCode = (phone) => request({ url: `/user/passport/sendCode/${phone}`, method: 'GET' });
+// 注册用户
+export const registerUser = (params) => request({ url: '/user/passport/register', method: 'POST', data: params });
+// 用户登录
+export const login = (params) => request({ url: '/user/passport/login', method: 'POST', data: params });
+// 获取用户信息
+export const getUserInfo = () => request({ url: '/user/passport/auth/getUserInfo', method: 'GET' });
+// 退出登录
+export const logout = () => request({url:'user/passport/logout', method: 'GET'});
 
 
 // mock request

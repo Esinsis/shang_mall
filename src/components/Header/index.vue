@@ -5,10 +5,16 @@
       <div class="container">
         <div class="loginList">
           <p>尚品汇欢迎您！</p>
-          <p>
+          <!-- 未登录：显示登录与注册 -->
+          <p v-if="!$store.state.user.userInfo.nickName">
             <span>请</span>
             <router-link to="/login">登录</router-link>
             <router-link class="register" to="/register">免费注册</router-link>
+          </p>
+          <!-- 已登录，显示用户名与退出登录 -->
+          <p v-else>
+            <a>{{ $store.state.user.userInfo.nickName }}</a>
+            <a class="register" @click="logout">退出登录</a>
           </p>
         </div>
         <div class="typeList">
@@ -62,6 +68,14 @@ export default {
         location.query = this.$route.query
       }
       this.$router.push(location)
+    },
+    async logout() {
+      try {
+        await this.$store.dispatch('logout');
+        this.$router.push('/home');
+      } catch (error) {
+        alert(error.message);
+      }
     }
   },
   mounted() {

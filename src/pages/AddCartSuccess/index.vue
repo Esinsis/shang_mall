@@ -34,8 +34,10 @@
         let result = "";
         saleAttrs.forEach(element => {
           result += element.saleAttrName + ":";
-          let checkedVal = element.spuSaleAttrValueList.find(e => e.isChecked == 1);
-          result += checkedVal.saleAttrValueName + " ";
+          let checkedVal = element.spuSaleAttrValueList.find(e => e.isChecked == 1) || {};
+          if(checkedVal.saleAttrValueName){
+            result += checkedVal.saleAttrValueName + " ";
+          }
         });
         return result;
       },
