@@ -22,7 +22,6 @@ const actions = {
     },
     async login({ commit }, params) {
         let result = await login(params);
-        console.log(result);
         if (result.code == 200) {
             commit('USER_LOGIN', result.data.token);
             localStorage.setItem("USER_TOKEN", result.data.token);
@@ -36,7 +35,6 @@ const actions = {
         if (result.code == 200) {
             commit("SET_USER_INFO", result.data);
         }
-        console.log(result);
     },
     async logout({ commit }) {
         let result = await logout();

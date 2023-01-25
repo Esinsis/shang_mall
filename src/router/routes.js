@@ -1,50 +1,86 @@
-import Home from '@/pages/Home'
-import Search from '@/pages/Search'
-import Login from "@/pages/Login";
-import Register from "@/pages/Register";
-import Detail from "@/pages/Detail";
-import ShopCart from "@/pages/ShopCart";
-import AddCartSuccess from '@/pages/AddCartSuccess'
-
 export default [
     {
         path: '/',
         redirect: '/home'
     },
     {
+        path: '/center',
+        component: () => import('@/pages/Center'),
+        meta: { showFooter: true },
+        children: [
+            {
+                path: 'myorder',
+                component: () => import('@/pages/Center/MyOrder')
+            },
+            {
+                path: 'grouporder',
+                component: () => import('@/pages/Center/GroupOrder')
+            },
+            {
+                path: '/center',
+                redirect: '/center/myorder'
+            }
+        ]
+    },
+    {
+        path: '/paySucess',
+        component: () => import('@/pages/PaySuccess'),
+        meta: { showFooter: true }
+    },
+    {
+        path: '/pay',
+        component: () => import('@/pages/Pay'),
+        meta: { showFooter: true },
+        beforeEnter(to, from, next) {
+            if (from.path == '/trade') {
+                next();
+            }
+        }
+    },
+    {
+        path: '/trade',
+        component: () => import('@/pages/Trade'),
+        meta: { showFooter: true },
+        beforeEnter: (to, from, next) => {
+            if (from.path == '/shopcart') {
+                next();
+            }
+        },
+    },
+    {
         path: '/shopcart',
-        component: ShopCart,
-        meta: {showFooter: true}
+        component: () => import('@/pages/ShopCart'),
+        meta: { showFooter: true }
     },
     {
         path: '/addCartSuccess',
         name: 'addCartSuccess',
-        component: AddCartSuccess,
-        meta: {showFooter: true}
+        component: () => import('@/pages/AddCartSuccess'),
+        meta: { showFooter: true }
     },
     {
         path: '/detail/:skuid',
-        component: Detail,
-        meta: {showFooter: true}
+        component: () => import('@/pages/Detail'),
+        meta: { showFooter: true }
     },
     {
         path: '/home',
-        component: Home,
-        meta: {showFooter: true}
+        component: () => import('@/pages/Home'),
+        meta: { showFooter: true }
     },
     {
         name: 'search',
         path: '/search/:keyword?',   // ? 表示参数可传可不传
-        component: Search,
-        meta: {showFooter: true},
+        component: () => import('@/pages/Search'),
+        meta: { showFooter: true },
         props: true
     },
     {
         path: '/login',
-        component: Login
+        component: () => import('@/pages/Login')
     },
     {
         path: '/register',
-        component: Register
+        component: () => import('@/pages/Register')
     }
 ]

@@ -24,9 +24,20 @@ export const login = (params) => request({ url: '/user/passport/login', method: 
 // 获取用户信息
 export const getUserInfo = () => request({ url: '/user/passport/auth/getUserInfo', method: 'GET' });
 // 退出登录
-export const logout = () => request({url:'user/passport/logout', method: 'GET'});
-
+export const logout = () => request({ url: 'user/passport/logout', method: 'GET' });
+// 获取用户地址信息
+export const getAddressInfo = () => request({ url: '/user/userAddress/auth/findUserAddressList', method: 'GET' });
+// 获取订单商品清单
+export const getOrderInfo = () => request({ url: '/order/auth/trade', method: 'GET' });
+// 提交订单
+export const submitOrder = (params, tradeNo) => request({ url: `order/auth/submitOrder?tradeNo=${tradeNo}`, method: 'POST', data: params });
+// 获取支付信息
+export const getPayInfo = (orderId) => request({url: `/payment/weixin/createNative/${orderId}`, method:'GET'})
+// 获取支付状态信息 
+export const getPayStatus = (orderId) => request({url: `/payment/weixin/queryPayStatus/${orderId}`, method: 'GET'});
+// 获取我的订单列表 order/auth/{page}/{limit}
+export const getMyOrders = (page, limit) => request({url: `/order/auth/${page}/${limit}`});
 
 // mock request
-export const getBannerList = () => mock_request.get('/banner')
-export const getFloorList = () => mock_request.get('/floor')
+export const getBannerList = () => mock_request.get('/banner');
+export const getFloorList = () => mock_request.get('/floor');

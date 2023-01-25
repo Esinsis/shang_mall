@@ -31,7 +31,6 @@
                 <span class="forget">忘记密码？</span>
               </div>
               <button class="btn" @click="login">登&nbsp;&nbsp;录</button>
-              <button class="btn" @click="getUserInfo">登&nbsp;&nbsp;录1</button>
             </form>
 
             <div class="call clearFix">
@@ -90,7 +89,8 @@
         try {
           await this.$store.dispatch('login', params);
           // 登录成功跳转到home 
-          this.$router.push('/home');
+          let toPath = this.$route.query.redirect || '/home';
+          this.$router.push(toPath);
         } catch (error) {
           alert(error.message);
         }

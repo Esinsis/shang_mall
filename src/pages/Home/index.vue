@@ -31,7 +31,7 @@ export default {
     Brand
   },
   mounted() {
-    this.$store.dispatch('home/getFloorList')
+    this.$store.dispatch('home/getFloorList');
   },
   computed: {
     ...mapState({
